@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.dve.sari.pokex"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.dve.sari.pokex"
