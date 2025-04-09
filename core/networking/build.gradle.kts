@@ -1,21 +1,21 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("com.google.dagger.hilt.android") version "2.48" // Apply Hilt plugin here
-    kotlin("kapt") // Apply the KAPT plugin for Hilt
+    alias(libs.plugins.hilt)
+    kotlin("kapt")
 }
 
 android {
     namespace = "com.dve.sari.networking"
-    compileSdk = 34
+    compileSdk = 35
 
     buildFeatures {
-        buildConfig = true // Enable BuildConfig feature
+        buildConfig = true
     }
 
     defaultConfig {
         minSdk = 24
-        buildConfigField("boolean", "DEBUG_MODE", "true") // Your custom BuildConfig field
+        buildConfigField("boolean", "DEBUG_MODE", "true")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -43,35 +43,23 @@ android {
 
 dependencies {
 
+    implementation(platform(libs.androidx.compose.bom.v20240400))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-
-    // Hilt dependencies
-    implementation(libs.hilt.android) // Make sure this is the correct version
-    kapt(libs.hilt.compiler) // Ensure kapt is applied for Hilt
-
-    // Kotlin Coroutines for async tasks
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
     implementation(libs.kotlinx.coroutines.android)
-
-    // Retrofit - HTTP client for API calls
     implementation(libs.retrofit)
-    implementation(libs.converter.moshi) // If you're using Moshi with Retrofit
-    implementation(libs.converter.gson)  // If you're using Gson with Retrofit
-
-    // Moshi - JSON parsing library (optional if using Moshi)
+    implementation(libs.converter.moshi)
+    implementation(libs.converter.gson)
     implementation(libs.moshi.kotlin)
-
-    // OkHttp - Networking library used by Retrofit
     implementation(libs.okhttp)
-    implementation(libs.logging.interceptor) // For logging network requests
-
-    // Slack Eithernet - Networking
+    implementation(libs.logging.interceptor)
     implementation(libs.slack.eithernet)
     implementation(libs.javapoet)
-    implementation(libs.androidx.compose.bom.v20240400)
 
-    // Testing libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

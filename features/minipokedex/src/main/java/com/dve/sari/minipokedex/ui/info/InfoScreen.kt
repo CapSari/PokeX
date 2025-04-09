@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -109,7 +110,7 @@ fun InfoScreen(
                             .weight(.45F),
                     ) {
                         Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                             contentDescription = null,
                             modifier = modifier
                                 .align(Alignment.TopStart)
@@ -292,11 +293,11 @@ fun InfoScreen(
 
                                     Box(modifier = modifier.weight(.6F)) {
                                         LinearProgressIndicator(
-                                            progress = statsValue,
+                                            progress = { statsValue },
                                             modifier = modifier
                                                 .fillMaxWidth()
                                                 .height(16.dp),
-                                            strokeCap = StrokeCap.Round
+                                            strokeCap = StrokeCap.Round,
                                         )
                                         Text(
                                             text = nameAndValue.second.toString(),

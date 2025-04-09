@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     kotlin("kapt")
-
 }
 
 android {
@@ -47,6 +46,10 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.androidx.compose.bom.v20240400))
+
+    implementation(project(":features:minipokedex"))
+    implementation(project(":core:theme"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -59,14 +62,12 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.compiler)
     implementation(libs.androidx.navigation.compose)
-    implementation(project(":features:minipokedex"))
-    implementation(project(":core:theme"))
-    implementation(platform(libs.androidx.compose.bom.v20240400))
     implementation(libs.slack.eithernet)
     implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.compiler) // Ensure kapt is applied for Hilt
+    kapt(libs.hilt.compiler)
     implementation(libs.javapoet)
-    implementation (libs.timber)
+    implementation(libs.timber)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
