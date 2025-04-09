@@ -1,4 +1,4 @@
-package com.dve.sari.pokex.ui.theme
+package com.dve.sari.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
