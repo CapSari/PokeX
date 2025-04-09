@@ -1,5 +1,6 @@
 package com.dve.sari.minipokedex.ui.info
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,13 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,8 +30,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -42,7 +41,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import java.util.Locale
-
 
 @Composable
 fun InfoScreen(
@@ -75,7 +73,8 @@ fun InfoScreen(
                         modifier = modifier
                             .background(Color.Red)
                             .clickable { viewModel.getDetails(id) },
-                        text = "An error occurred. Tap to retry."
+                        text = "An error occurred. Tap to retry.",
+                        color = Color.White
                     )
                 }
             }
@@ -87,229 +86,224 @@ fun InfoScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(modifier = modifier.size(48.dp))
-                    Text(text = "Loading Pokémon details...")
+                    Text(text = "Loading Pokémon details...", color = Color.Black)
                 }
             }
 
-            CharacterDetailsUIState.Idle -> {
-            }
+            CharacterDetailsUIState.Idle -> {}
 
             is CharacterDetailsUIState.Success -> {
                 val character = state.pokemon
+                val pokemonColor = character.pokemonColor.colorValue
 
                 Column(
                     modifier = modifier
                         .fillMaxSize()
-                        .background(character.pokemonColor.colorValue.copy(alpha = .5F))
+                        .background(Color.White)
+                        .verticalScroll(scrollState)
+                        .padding(16.dp)
                 ) {
-                    Box(
+                    Row(
                         modifier = modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp)
-                            .weight(.45F),
+                            .padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.Start
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                             contentDescription = null,
                             modifier = modifier
-                                .align(Alignment.TopStart)
                                 .padding(start = 16.dp)
                                 .clickable { navigateBack() }
                         )
-                        Column(
-                            modifier = modifier
-                                .align(Alignment.Center)
-                                .padding(bottom = 16.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            UrlImageView(
-                                url = character.imageUrl,
-                                imageSize = 160.dp,
-                                scale = ContentScale.Fit
-                            )
-                        }
-
-                        Column(
-                            modifier = modifier
-                                .fillMaxWidth()
-                                .align(Alignment.BottomStart)
-                                .padding(start = 8.dp, bottom = 8.dp, top = 8.dp)
-                        ) {
-                            Text(
-                                text = character.name.replaceFirstChar {
-                                    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
-                                },
-                                style = MaterialTheme.typography.headlineLarge.copy(
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-
-                            Spacer(modifier = modifier.width(8.dp))
-
-                            Row(
-                                modifier = modifier.fillMaxWidth()
-                            ) {
-                                character.types.forEach {
-                                    InputChip(
-                                        selected = false,
-                                        onClick = { },
-                                        label = {
-                                            Text(
-                                                text = it.replaceFirstChar {
-                                                    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
-                                                },
-                                                style = MaterialTheme.typography.bodySmall
-                                            )
-                                        },
-                                        shape = RoundedCornerShape(percent = 80),
-                                        colors = InputChipDefaults.inputChipColors(
-                                            containerColor = MaterialTheme.colorScheme.surface,
-                                            labelColor = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    )
-                                    Spacer(modifier = modifier.width(16.dp))
-                                }
-                            }
-                        }
                     }
 
-                    ElevatedCard(
+                    Column(
                         modifier = modifier
                             .fillMaxWidth()
-                            .weight(.65F),
-                        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+                            .padding(top = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
-                            modifier = modifier
-                                .fillMaxWidth()
-                                .verticalScroll(scrollState)
-                                .padding(top = 20.dp, start = 16.dp, end = 16.dp),
-                        ) {
-                            Text(
-                                text = "About",
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                            Spacer(modifier = modifier.height(8.dp))
-                            Text(
-                                text = character.about,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
+                        UrlImageView(
+                            url = character.imageUrl,
+                            imageSize = 160.dp,
+                            scale = ContentScale.Fit
+                        )
+                    }
 
-                            Spacer(modifier = modifier.height(16.dp))
+                    Text(
+                        text = character.name.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                        },
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = pokemonColor
+                        ),
+                        modifier = modifier.padding(top = 16.dp)
+                    )
 
-                            Card(modifier = modifier.fillMaxWidth()) {
-                                Column(
-                                    modifier = modifier
-                                        .fillMaxWidth()
-                                        .padding(all = 16.dp)
-                                ) {
-                                    Row(
-                                        modifier = modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(text = "Weight:")
-                                        Spacer(modifier = modifier.width(8.dp))
-                                        Text(
-                                            text = character.weight,
-                                            style = MaterialTheme.typography.bodyMedium.copy(
-                                                fontWeight = FontWeight.Bold
-                                            )
-                                        )
-                                    }
+                    Spacer(modifier = modifier.height(8.dp))
 
-                                    Spacer(modifier = modifier.height(8.dp))
-
-                                    Row(
-                                        modifier = modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(text = "Height:")
-                                        Spacer(modifier = modifier.width(8.dp))
-                                        Text(
-                                            text = character.height,
-                                            style = MaterialTheme.typography.bodyMedium.copy(
-                                                fontWeight = FontWeight.Bold
-                                            )
-                                        )
-                                    }
-
-                                    Spacer(modifier = modifier.height(16.dp))
-
-                                    Text(text = "Abilities")
-                                    Spacer(modifier = modifier.height(8.dp))
-
-                                    Row(
-                                        modifier = modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
-                                        character.abilities.forEach { (name, selected) ->
-                                            InputChip(
-                                                selected = selected,
-                                                onClick = { },
-                                                label = {
-                                                    Text(
-                                                        text = name,
-                                                        style = MaterialTheme.typography.bodySmall
-                                                    )
-                                                },
-                                                shape = RoundedCornerShape(percent = 80),
-                                                colors = InputChipDefaults.inputChipColors(
-                                                    selectedContainerColor = character.pokemonColor.colorValue.copy(
-                                                        alpha = .5F
-                                                    )
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-
-                            Spacer(modifier = modifier.height(16.dp))
-                            Text(
-                                text = "Stats",
-                                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                            )
-                            Spacer(modifier = modifier.height(8.dp))
-                            character.stats.forEach { nameAndValue ->
-                                Row(
-                                    modifier = modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 8.dp, bottom = 8.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    val statsValue = nameAndValue.second.toFloat() / 100
+                    Row(modifier = modifier.fillMaxWidth()) {
+                        character.types.forEach {
+                            InputChip(
+                                selected = false,
+                                onClick = {},
+                                label = {
                                     Text(
-                                        modifier = modifier.weight(.5F),
-                                        text = nameAndValue.first.replaceFirstChar {
+                                        text = it.replaceFirstChar {
                                             if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
                                         },
-                                        style = MaterialTheme.typography.bodyMedium
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = Color.Black
+                                    )
+                                },
+                                shape = RoundedCornerShape(percent = 80),
+                                colors = InputChipDefaults.inputChipColors(
+                                    containerColor = pokemonColor,
+                                    labelColor = MaterialTheme.colorScheme.onSurface
+                                )
+                            )
+                            Spacer(modifier = modifier.width(16.dp))
+                        }
+                    }
+
+                    Spacer(modifier = modifier.height(16.dp))
+
+                    Text(
+                        text = "About",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                    )
+                    Spacer(modifier = modifier.height(8.dp))
+                    Text(
+                        text = character.about,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Black
+                    )
+
+                    Spacer(modifier = modifier.height(16.dp))
+
+                    Text(
+                        text = "Weight: ${character.weight}",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                    )
+
+                    Spacer(modifier = modifier.height(8.dp))
+
+                    Text(
+                        text = "Height: ${character.height}",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                    )
+
+                    Spacer(modifier = modifier.height(16.dp))
+
+                    Text(
+                        text = "Abilities",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                    )
+                    Spacer(modifier = modifier.height(8.dp))
+
+                    Row(
+                        modifier = modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        character.abilities.forEach { (name, selected) ->
+                            InputChip(
+                                selected = selected,
+                                onClick = {},
+                                label = {
+                                    Text(
+                                        text = name,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = Color.Black
+                                    )
+                                },
+                                shape = RoundedCornerShape(percent = 80),
+                                colors = InputChipDefaults.inputChipColors(
+                                    selectedContainerColor = pokemonColor.copy(alpha = 0.5F)
+                                )
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = modifier.height(16.dp))
+
+                    Text(
+                        text = "Stats",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                    )
+
+                    Spacer(modifier = modifier.height(8.dp))
+
+                    character.stats.forEach { nameAndValue ->
+                        Row(
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, bottom = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                modifier = modifier.weight(0.5F),
+                                text = nameAndValue.first.replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                                },
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Black
+                            )
+
+                            Box(
+                                modifier = modifier
+                                    .weight(0.6F)
+                                    .height(30.dp)
+                                    .fillMaxWidth(),
+                                contentAlignment = Alignment.CenterEnd
+                            ) {
+                                val statsValue = nameAndValue.second.toFloat() / 100
+                                Canvas(modifier = modifier.size(30.dp)) {
+                                    drawCircle(
+                                        color = Color.Blue,
+                                        radius = size.minDimension / 2,
+                                        style = Stroke(width = 4.dp.toPx())
                                     )
 
-                                    Box(modifier = modifier.weight(.6F)) {
-                                        LinearProgressIndicator(
-                                            progress = { statsValue },
-                                            modifier = modifier
-                                                .fillMaxWidth()
-                                                .height(16.dp),
-                                            strokeCap = StrokeCap.Round,
-                                        )
-                                        Text(
-                                            text = nameAndValue.second.toString(),
-                                            modifier = modifier
-                                                .align(Alignment.CenterEnd)
-                                                .padding(end = 4.dp),
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
-                                    }
+                                    drawArc(
+                                        color = Color.Green,
+                                        startAngle = -90f,
+                                        sweepAngle = statsValue * 360f,
+                                        useCenter = true,
+                                        size = size,
+                                        topLeft = Offset(0f, 0f)
+                                    )
                                 }
+
+                                Text(
+                                    text = nameAndValue.second.toString(),
+                                    modifier = modifier
+                                        .align(Alignment.CenterEnd)
+                                        .padding(end = 4.dp),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color.Black
+                                )
                             }
                         }
                     }
+
                 }
             }
         }
@@ -326,7 +320,7 @@ fun UrlImageView(
     Box(
         modifier = modifier
             .size(imageSize)
-            .background(Color.Gray)
+            .background(Color.Gray, shape = RoundedCornerShape(50))
     ) {
         AsyncImage(
             model = url,

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dve.sari.minipokedex.domain.model.Pokemon
 import com.dve.sari.minipokedex.domain.usecase.GetPokemonDetails
+import com.dve.sari.minipokedex.domain.usecase.GetPokemons
 import com.dve.sari.minipokedex.ui.home.ErrorType
 import com.dve.sari.networking.di.IODispatcher
 import com.dve.sari.networking.util.PokeXBaseResult
@@ -28,39 +29,13 @@ class InfoViewModel @Inject constructor(
 
     private val getDetailsEvent = Channel<String>(Channel.CONFLATED)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val uIState = getDetailsEvent
         .receiveAsFlow()
         .flatMapMerge {
             getPokemonDetails.execute(it)
         }.map { result ->
-            when (result) {
-                is PokeXBaseResult.Loading -> CharacterDetailsUIState.Loading
-                is PokeXBaseResult.Failure -> {
-                    when (val error = result.error) {
-                        is GetPokemonDetails.Errors.HttpError -> {
-                            CharacterDetailsUIState.Error(
-                                errorType = ErrorType.HttpError(message = error.message)
-                            )
-                        }
-
-                        GetPokemonDetails.Errors.NetworkError -> {
-                            CharacterDetailsUIState.Error(errorType = ErrorType.NetworkError)
-                        }
-
-                        GetPokemonDetails.Errors.UnknownError -> {
-                            CharacterDetailsUIState.Error(errorType = ErrorType.UnknownError)
-                        }
-
-                        else -> {}
-                    }
-                }
-
-                is PokeXBaseResult.Success -> CharacterDetailsUIState.Success(result.data)
-                else -> {}
-            }
-        }
-        .flowOn(coroutineDispatcher)
+            mapToUIState(result)
+        }.flowOn(coroutineDispatcher)
         .stateIn(
             scope = viewModelScope,
             initialValue = CharacterDetailsUIState.Idle,
@@ -69,6 +44,41 @@ class InfoViewModel @Inject constructor(
 
     fun getDetails(id: String) {
         getDetailsEvent.trySend(id)
+    }
+    private fun mapToUIState(
+        result: PokeXBaseResult<Pokemon, GetPokemonDetails.Errors>
+    ): CharacterDetailsUIState {
+        return when (result) {
+            is PokeXBaseResult.Loading -> CharacterDetailsUIState.Loading
+            is PokeXBaseResult.Failure -> {
+                when (val error = result.error) {
+                    is GetPokemonDetails.Errors.HttpError -> {
+                        CharacterDetailsUIState.Error(
+                            errorType = ErrorType.HttpError(
+                                message = error.message
+                            )
+                        )
+                    }
+
+                    GetPokemonDetails.Errors.NetworkError -> {
+                        CharacterDetailsUIState.Error(
+                            errorType = ErrorType.NetworkError
+                        )
+                    }
+
+                    GetPokemonDetails.Errors.UnknownError -> {
+                        CharacterDetailsUIState.Error(
+                            errorType = ErrorType.UnknownError
+                        )
+                    }
+
+                    GetPokemons.Errors.NetworkError -> TODO()
+                    GetPokemons.Errors.UnknownError -> TODO()
+                }
+            }
+
+            is PokeXBaseResult.Success -> CharacterDetailsUIState.Success(result.data)
+        }
     }
 }
 

@@ -8,12 +8,12 @@ import com.pokamon.features.pokedex.domain.mapper.PokemonColor
 data class Pokemon(
     val id: String,
     val name: String,
-    val stats: List<Pair<String, Int>>, //name, value
+    val stats: List<Pair<String, Int>>,
     val imageUrl: String,
     val about: String,
     val height: String,
     val weight: String,
-    val abilities: List<Pair<String, Boolean>>, //name, hidden
+    val abilities: List<Pair<String, Boolean>>,
     val types: List<String>,
     val pokemonColor: PokemonColor,
 )
