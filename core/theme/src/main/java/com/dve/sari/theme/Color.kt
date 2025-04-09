@@ -29,7 +29,6 @@ val pokemon_light_outline = Color(0xFF797869)
 val pokemon_light_inverseOnSurface = Color(0xFFF5F77E)
 val pokemon_light_inverseSurface = Color(0xFF313300)
 val pokemon_light_inversePrimary = Color(0xFF4C9DFF)
-val pokemon_light_shadow = Color(0xFF000000)
 val pokemon_light_surfaceTint = Color(0xFF4C9DFF)
 val pokemon_light_outlineVariant = Color(0xFFCAC7B6)
 val pokemon_light_scrim = Color(0xFF000000)
@@ -61,28 +60,6 @@ val pokemon_dark_outline = Color(0xFF939182)
 val pokemon_dark_inverseOnSurface = Color(0xFF1C1D00)
 val pokemon_dark_inverseSurface = Color(0xFFE6E971)
 val pokemon_dark_inversePrimary = Color(0xFF4C9DFF)
-val pokemon_dark_shadow = Color(0xFF000000)
 val pokemon_dark_surfaceTint = Color(0xFF4C9DFF)
 val pokemon_dark_outlineVariant = Color(0xFF48473A)
 val pokemon_dark_scrim = Color(0xFF000000)
-
-// Pokémon Seed and Custom Colors
-val pokemon_seed = Color(0xFFFFD700)
-
-val pokemonPrimaryColor = Color(0xFF4C9DFF)
-val pokemonSecondaryColor = Color(0xFFFFD700)
-val pokemonTertiaryColor = Color(0xFFEF476F)
-val pokemonErrorColor = Color(0xFFE63946)
-
-
-
-// Pokémon-themed Type Colors
-val pokemon_Grass = Color(0xFF7AC74C)
-val pokemon_Fire = Color(0xFFEE8130)
-val pokemon_Water = Color(0xFF6390F0)
-val pokemon_Electric = Color(0xFFF7D02C)
-val pokemon_Psychic = Color(0xF87D51F)
-val pokemon_Ice = Color(0xFF96D9D6)
-val pokemon_Fairy = Color(0xFFF8A7F8)
-val pokemon_Fighting = Color(0xFF9B2226)
-val pokemon_Dragon = Color(0xFF6F35FC)
