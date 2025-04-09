@@ -35,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -54,7 +53,6 @@ fun InfoScreen(
     val viewModel = hiltViewModel<InfoViewModel>()
     val uiState by viewModel.uIState.collectAsStateWithLifecycle()
 
-    // Trigger loading details on id change
     LaunchedEffect(key1 = id) {
         viewModel.getDetails(id)
     }
@@ -67,7 +65,6 @@ fun InfoScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when (val state = uiState) {
-            // Error state handling
             is CharacterDetailsUIState.Error -> {
                 Column(
                     modifier = modifier.fillMaxSize(),
@@ -83,7 +80,6 @@ fun InfoScreen(
                 }
             }
 
-            // Loading state handling
             CharacterDetailsUIState.Loading -> {
                 Column(
                     modifier = modifier.fillMaxSize(),
@@ -95,16 +91,12 @@ fun InfoScreen(
                 }
             }
 
-            // Idle state (Do nothing, can show a placeholder or splash if desired)
             CharacterDetailsUIState.Idle -> {
-                // Placeholder or empty state if needed
             }
 
-            // Success state handling: Display Pokémon details
             is CharacterDetailsUIState.Success -> {
                 val character = state.pokemon
 
-                // Main column to hold the content
                 Column(
                     modifier = modifier
                         .fillMaxSize()
@@ -138,7 +130,6 @@ fun InfoScreen(
                             )
                         }
 
-                        // Pokémon name and type row
                         Column(
                             modifier = modifier
                                 .fillMaxWidth()
@@ -183,7 +174,6 @@ fun InfoScreen(
                         }
                     }
 
-                    // ElevatedCard for detailed stats and info
                     ElevatedCard(
                         modifier = modifier
                             .fillMaxWidth()
@@ -210,7 +200,6 @@ fun InfoScreen(
 
                             Spacer(modifier = modifier.height(16.dp))
 
-                            // Weight and Height info
                             Card(modifier = modifier.fillMaxWidth()) {
                                 Column(
                                     modifier = modifier
@@ -337,7 +326,7 @@ fun UrlImageView(
     Box(
         modifier = modifier
             .size(imageSize)
-            .background(Color.Gray)  // Set a background color to ensure the image is visible
+            .background(Color.Gray)
     ) {
         AsyncImage(
             model = url,

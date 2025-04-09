@@ -4,15 +4,28 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,7 +68,7 @@ fun HomeScreen(
     var items by remember {
         mutableStateOf(listOf<PokemonListing>())
     }
-    var searchQuery by remember { mutableStateOf("") } // Holds the search query
+    var searchQuery by remember { mutableStateOf("") }
 
     val scrollState = rememberScrollState()
 
@@ -95,7 +108,6 @@ fun HomeScreen(
             is CharactersUIState.Success -> {
                 items = (state as CharactersUIState.Success).characters
 
-                // Filter the characters based on the search query
                 val filteredItems = items.filter { character ->
                     character.name.contains(searchQuery, ignoreCase = true)
                 }
@@ -114,7 +126,7 @@ fun HomeScreen(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CharactersContent(
     modifier: Modifier = Modifier,
@@ -130,35 +142,32 @@ fun CharactersContent(
             .verticalScroll(scrollState)
             .padding(top = 8.dp)
     ) {
-        // Replace the "PokeX Characters" text with an image in the header
         Box(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
             contentAlignment = Alignment.Center
         ) {
-            // Load the image from resources
             Image(
-                painter = painterResource(id = R.drawable.pokemon), // Replace with your image name
+                painter = painterResource(id = R.drawable.pokemon),
                 contentDescription = "Header Image",
-                modifier = modifier.size(100.dp) // Adjust the size of the header image
+                modifier = modifier.size(100.dp)
             )
         }
 
-        // Search Bar with Curved Edges
         Box(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
-                .clip(RoundedCornerShape(16.dp)) // Rounded corners for the search bar
-                .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp)) // Border with color
+                .clip(RoundedCornerShape(16.dp))
+                .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
         ) {
             BasicTextField(
                 value = searchText,
                 onValueChange = onSearchQueryChange,
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(16.dp), // Padding inside the text field
+                    .padding(16.dp),
                 textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
                 singleLine = true,
                 decorationBox = { innerTextField ->
@@ -193,23 +202,21 @@ fun CharactersContent(
                         modifier = modifier
                             .size(150.dp)
                             .clickable { onItemClicked(character.id) }
-                            .padding(8.dp), // Padding around the circle
-                        contentAlignment = Alignment.Center // Center both image and text inside the circle
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        // Circular Image with Border and Padding inside the Circle
                         Box(
                             modifier = modifier
-                                .size(180.dp) // Set size for the circular container
-                                .padding(18.dp) // Add padding inside the circle
+                                .size(180.dp)
+                                .padding(18.dp)
                         ) {
                             UrlImageView(
                                 url = character.imageUrl,
-                                imageSize = 120.dp, // Make image size smaller to fit with padding
+                                imageSize = 120.dp,
                                 modifier = modifier.fillMaxSize()
                             )
                         }
 
-                        // Character Name at the bottom inside the circle
                         Text(
                             modifier = modifier
                                 .align(Alignment.BottomCenter)

@@ -89,7 +89,6 @@ class CharacterDetailsMapperImpl @Inject internal constructor() : CharacterDetai
             }
 
             is ApiResult.Failure.ApiFailure -> {
-                //Timber.e("api failure ${characterDetailsResult.error?.toString()}")
                 PokeXBaseResult.Failure(GetPokemonDetails.Errors.NetworkError)
             }
 

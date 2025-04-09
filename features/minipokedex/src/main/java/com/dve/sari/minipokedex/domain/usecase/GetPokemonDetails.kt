@@ -33,7 +33,6 @@ class GetPokemonDetails @Inject constructor(
         val result = characterDetailsMapper.mapResult(details, speciesDetails)
         emit(result)
     }.catch {
-        //Timber.e(it)
         it.printStackTrace()
         emit(PokeXBaseResult.Failure(Errors.UnknownError))
     }

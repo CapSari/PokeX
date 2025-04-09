@@ -27,7 +27,6 @@ class GetPokemons @Inject constructor(
         emit(mapper.mapResult(response))
     }.catch {
         it.printStackTrace()
-        //Timber.e(it)
-        //emit(CharactersUIState.Error(ErrorType.UnknownError))
+        emit(PokeXBaseResult.Failure(Errors.UnknownError))
     }
 }

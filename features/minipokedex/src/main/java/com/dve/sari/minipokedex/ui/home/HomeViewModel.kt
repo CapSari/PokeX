@@ -3,9 +3,7 @@ package com.dve.sari.minipokedex.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dve.sari.minipokedex.domain.mapper.GetPokemonsResult
-import com.dve.sari.minipokedex.domain.model.Pokemon
 import com.dve.sari.minipokedex.domain.model.PokemonListing
-import com.dve.sari.minipokedex.domain.usecase.GetPokemonDetails
 import com.dve.sari.minipokedex.domain.usecase.GetPokemons
 import com.dve.sari.networking.di.IODispatcher
 import com.dve.sari.networking.util.PokeXBaseResult
@@ -49,13 +47,6 @@ class HomeViewModel @Inject constructor(
 
     fun getCharacters() {
         getCharactersEvent.trySend(Unit)
-    }
-
-    fun filterCharacters(
-        searchText: String = "",
-        characters: List<PokemonListing> = emptyList()
-    ) {
-//        getCharactersEvent.trySend(Request(searchText, characters))
     }
 
     private fun mapToUIState(
