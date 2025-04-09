@@ -44,19 +44,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dve.sari.minipokedex.R
 import com.dve.sari.minipokedex.domain.model.PokemonListing
 import com.dve.sari.minipokedex.ui.UrlImageView
-import com.dve.sari.networking.util.createImageUrl
 import java.util.Locale
-import java.util.UUID
 
-val sampleItems = List(
-    20,
-) {
-    PokemonListing(
-        id = UUID.randomUUID().toString(),
-        name = "Pokemon $it",
-        imageUrl = createImageUrl((it + 1).toString())
-    )
-}
 
 @Composable
 fun HomeScreen(
@@ -119,7 +108,7 @@ fun HomeScreen(
                     searchText = searchQuery,
                     scrollState = scrollState,
                     onItemClicked = onItemClicked,
-                    onSearchQueryChange = { searchQuery = it } // Update the search query
+                    onSearchQueryChange = { searchQuery = it }
                 )
             }
         }
@@ -189,7 +178,10 @@ fun CharactersContent(
         Spacer(modifier = modifier.height(24.dp))
 
         if (characters.isEmpty()) {
-            Text(text = "Sorry ! we dont have that character", style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = "Sorry ! we don't have that character",
+                style = MaterialTheme.typography.bodyLarge
+            )
         } else {
             FlowRow(
                 modifier = modifier.fillMaxWidth(),

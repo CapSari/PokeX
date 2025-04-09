@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dve.sari.minipokedex.domain.model.Pokemon
 import com.dve.sari.minipokedex.domain.usecase.GetPokemonDetails
-import com.dve.sari.minipokedex.domain.usecase.GetPokemons
 import com.dve.sari.minipokedex.ui.home.ErrorType
 import com.dve.sari.networking.di.IODispatcher
 import com.dve.sari.networking.util.PokeXBaseResult
@@ -33,7 +32,7 @@ class InfoViewModel @Inject constructor(
     val uIState = getDetailsEvent
         .receiveAsFlow()
         .flatMapMerge {
-            getPokemonDetails.execute(it)  // This returns PokeXBaseResult<Pokemon, GetPokemonDetails.Errors>
+            getPokemonDetails.execute(it)
         }.map { result ->
             when (result) {
                 is PokeXBaseResult.Loading -> CharacterDetailsUIState.Loading
@@ -53,7 +52,6 @@ class InfoViewModel @Inject constructor(
                             CharacterDetailsUIState.Error(errorType = ErrorType.UnknownError)
                         }
 
-                        // You can add more error cases as needed
                         else -> {}
                     }
                 }
