@@ -16,8 +16,8 @@ Displays Pokémon selected
     
 ## App (PokeX) Screenshots
 
-![Home](images/pokexscreen.png)
-![Search](images/pokexsearch.png)
+![Home](images/home.png)
+![Search](images/info.png)
 
 
 ## Setup
@@ -33,7 +33,7 @@ The PokeX uses modularization and MVVM architecture
 
 Below shows the modularization diagram that is followed on PokeX
 
-![Modularization](images/modularization.png)
+![Modularization](images/mod.png)
 
 
 ### App Module
